@@ -63,7 +63,7 @@ public class City {
     }
 
     public static void createTableCity() {
-        String SQL = "CREATE TABLE sities(" +
+        String SQL = "CREATE TABLE cities(" +
                 "id SERIAL PRIMARY KEY," +
                 "name VARCHAR(50) NOT NULL," +
                 "population INTEGER," +
@@ -77,27 +77,21 @@ public class City {
         }
     }
 
-
-
-
-    public static void addCitis(int id, String name, int population, String square, String wealth) {
-        String SQL = "INSERT INTO Cities(id,name,age,population,square,wealth)" +
-                "VALUES(?,?,?,?,?)";
+    public static void addCities( String name, int population, String square, String wealth) {
+        String SQL = "INSERT INTO cities(name,population,square,wealth)" +
+                "VALUES(?,?,?,?)";
         try (Connection con = Bd.connection();
              PreparedStatement statement = con.prepareStatement(SQL)) {
-            statement.setInt(1, id);
-            statement.setString(2, name);
-            statement.setInt(3, population);
-            statement.setString(4, square);
-            statement.setString(5, wealth);
+            statement.setString(1, name);
+            statement.setInt(2, population);
+            statement.setString(3, square);
+            statement.setString(4, wealth);
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
     }
-
-
 
 
     public static List<City> getCity() {
@@ -107,12 +101,13 @@ public class City {
              Statement statement = con.createStatement()) {
             ResultSet resultSet = statement.executeQuery(SQL);
             while (resultSet.next()) {
-               City city = new City();
-               city.setId(resultSet.getInt("id"));
+                City city = new City();
+                city.setId(resultSet.getInt("id"));
                 city.setName(resultSet.getString("name"));
                 city.setPopulation(resultSet.getInt("population"));
                 city.setSquare(resultSet.getString("square"));
                 city.setWealth(resultSet.getString("wealth"));
+
                 cities.add(city);
             }
 
@@ -121,6 +116,8 @@ public class City {
         }
         return cities;
     }
+
+
 
 
 

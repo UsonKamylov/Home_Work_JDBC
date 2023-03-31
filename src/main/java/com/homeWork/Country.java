@@ -1,9 +1,8 @@
 package com.homeWork;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Country {
     private int id;
@@ -78,20 +77,43 @@ public class Country {
         }
     }
 
-    public static void addCountry(int id,String name, int population, String square, String wealth) {
-        String SQL = "INSERT INTO Country(id,name,age,population,square,wealth)" +
-                "VALUES(?,?,?,?,?)";
+    public static void addCountry(String name, int population, String square, String wealth) {
+        String SQL = "INSERT INTO country(name,population,square,wealth)" +
+                "VALUES(?,?,?,?)";
         try (Connection con = Bd.connection();
              PreparedStatement statement = con.prepareStatement(SQL)) {
-            statement.setInt(1, id);
-            statement.setString(2, name);
-            statement.setInt(3, population);
-            statement.setString(4, square);
-            statement.setString(5, wealth);
+            statement.setString(1, name);
+            statement.setInt(2, population);
+            statement.setString(3, square);
+            statement.setString(4, wealth);
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
     }
+
+    public static List<Country> getCountry() {
+        String SQL = "SELECT * FROM COUTREIS";
+        List<Country> countries = new ArrayList<>();
+        try (Connection con = Bd.connection();
+             Statement statement = con.createStatement()) {
+            ResultSet resultSet = statement.executeQuery(SQL);
+            while (resultSet.next()) {
+                Country country = new Country();
+                country.setId(resultSet.getInt("id"));
+                country.setName(resultSet.getString("name"));
+                country.setPopulation(resultSet.getInt("population"));
+                country.setSquare(resultSet.getString("square"));
+                country.setWealth(resultSet.getString("wealth"));
+                countries.add(country);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return countries;
+    }
+
+
+
 }

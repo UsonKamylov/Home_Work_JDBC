@@ -1,9 +1,8 @@
 package com.homeWork;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Mayor {
     private int id;
@@ -62,9 +61,8 @@ public class Mayor {
                 ", wealth='" + wealth + '\'' +
                 '}';
     }
-
     public static void createTableBoss() {
-        String SQL = "CREATE TABLE Boss(" +
+        String SQL = "CREATE TABLE boss(" +
                 "id SERIAL PRIMARY KEY," +
                 "name VARCHAR(50) NOT NULL," +
                 "last_Name VARCHAR(50) NOT NULL ," +
@@ -78,22 +76,45 @@ public class Mayor {
         }
     }
 
-    public static void addBoss(int id, String name, String lastName, int age, String wealth) {
-        String SQL = "INSERT INTO Boss(id,name,age,lastname,age,wealth)" +
-                "VALUES(?,?,?,?,?)";
+    public static void addBoss( String name, String lastName, int age, String wealth) {
+        String SQL = "INSERT INTO boss(name,last_name,age,wealth)" +
+                "VALUES(?,?,?,?)";
         try (Connection con = Bd.connection();
              PreparedStatement statement = con.prepareStatement(SQL)) {
-            statement.setInt(1, id);
-            statement.setString(2, name);
-            statement.setString(3, lastName);
-            statement.setInt(4, age);
-            statement.setString(5, wealth);
+            statement.setString(1, name);
+            statement.setString(2, lastName);
+            statement.setInt(3, age);
+            statement.setString(4, wealth);
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
     }
+
+
+    public static List<Mayor> getMayor() {
+        String SQL = "SELECT * FROM MAYOR";
+        List<Mayor> mayors = new ArrayList<>();
+        try (Connection con = Bd.connection();
+             Statement statement = con.createStatement()) {
+            ResultSet resultSet = statement.executeQuery(SQL);
+            while (resultSet.next()) {
+                Mayor mayor = new Mayor();
+                mayor.setId(resultSet.getInt("id"));
+                mayor.setName(resultSet.getString("name"));
+                mayor.setLastName(resultSet.getString("lastname"));
+                mayor.setAge(resultSet.getInt("age"));
+                mayor.setWealth(resultSet.getString("wealth"));
+                mayors.add(mayor);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return mayors;
+    }
+
+
 
 
 
